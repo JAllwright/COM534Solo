@@ -1,0 +1,25 @@
+@startuml
+actor User
+boundary LoginScreen
+control ReservationSystem
+database UsersTable
+
+User -> LoginScreen: enters username/password
+activate LoginScreen
+LoginScreen -> ReservationSystem: validateLogin(username, password)
+activate ReservationSystem
+ReservationSystem -> UsersTable: query(username, password)
+activate UsersTable
+UsersTable --> ReservationSystem: result (success or failure)
+deactivate UsersTable
+alt Credentials valid
+    ReservationSystem -> LoginScreen: Success feedback
+    deactivate ReservationSystem
+    LoginScreen --> User: Show "Progress to Dashboard"
+else Credentials invalid
+    ReservationSystem -> LoginScreen: Failed feedback
+    deactivate ReservationSystem
+    LoginScreen --> User: Show "Invalid credentials. Try again"
+end
+deactivate LoginScreen
+@enduml

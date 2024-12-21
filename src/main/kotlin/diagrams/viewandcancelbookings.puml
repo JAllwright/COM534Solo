@@ -1,0 +1,38 @@
+@startuml
+actor User
+boundary ViewAndCancelBookingsScreen
+control ReservationSystem
+database BookingsTable
+
+User -> ViewAndCancelBookingsScreen: requests bookings
+activate ViewAndCancelBookingsScreen
+ViewAndCancelBookingsScreen -> ReservationSystem: getUserBookings(userName)
+activate ReservationSystem
+ReservationSystem -> BookingsTable: Query user bookings
+activate BookingsTable
+BookingsTable --> ReservationSystem: List of bookings
+deactivate BookingsTable
+ReservationSystem --> ViewAndCancelBookingsScreen: Return bookings
+deactivate ReservationSystem
+ViewAndCancelBookingsScreen --> User: Display bookings
+deactivate ViewAndCancelBookingsScreen
+
+User -> ViewAndCancelBookingsScreen: selects booking to cancel
+activate ViewAndCancelBookingsScreen
+ViewAndCancelBookingsScreen -> ReservationSystem: cancelBooking(bookingId, userName)
+activate ReservationSystem
+ReservationSystem -> BookingsTable: Validate and delete booking
+activate BookingsTable
+alt Booking found and cancelled
+    BookingsTable --> ReservationSystem: Success
+    deactivate BookingsTable
+    ReservationSystem --> ViewAndCancelBookingsScreen: "Booking canceled successfully."
+    deactivate ReservationSystem
+else Booking not found
+    BookingsTable --> ReservationSystem: Failure
+    deactivate BookingsTable
+    ReservationSystem --> ViewAndCancelBookingsScreen: "No matching booking found for the current user."
+    deactivate ReservationSystem
+end
+deactivate ViewAndCancelBookingsScreen
+@enduml

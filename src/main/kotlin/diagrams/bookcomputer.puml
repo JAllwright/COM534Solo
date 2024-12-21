@@ -1,0 +1,37 @@
+@startuml
+actor User
+boundary BookComputerScreen
+control ReservationSystem
+database RoomsTable
+database BookingsTable
+
+User -> BookComputerScreen: enters room, day, and timeslot
+activate BookComputerScreen
+BookComputerScreen -> ReservationSystem: bookComputer(userName, buildingCode, roomNumber, day, timeslot)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: Validate room existence
+activate RoomsTable
+alt Room exists
+    RoomsTable --> ReservationSystem: Room found
+    deactivate RoomsTable
+    ReservationSystem -> BookingsTable: Check available computers for room and timeslot
+    activate BookingsTable
+    alt Computer available
+        BookingsTable --> ReservationSystem: Computer available
+        ReservationSystem -> BookingsTable: Book computer
+        deactivate BookingsTable
+        ReservationSystem --> BookComputerScreen: "Booking confirmed for computer: $computerId on $day at $timeslot."
+    else No computer available
+        BookingsTable --> ReservationSystem: No computers available
+        deactivate BookingsTable
+        ReservationSystem --> BookComputerScreen: "No available computers for the selected timeslot in room $buildingCode-$roomNumber."
+    end
+else Room does not exist
+    RoomsTable --> ReservationSystem: Room not found
+    deactivate RoomsTable
+    ReservationSystem --> BookComputerScreen: "Room not found: $buildingCode-$roomNumber."
+end
+deactivate ReservationSystem
+BookComputerScreen --> User: Show result
+deactivate BookComputerScreen
+@enduml

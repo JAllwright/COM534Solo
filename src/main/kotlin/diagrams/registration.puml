@@ -1,0 +1,29 @@
+@startuml
+actor User
+boundary SignUpScreen
+control ReservationSystem
+database UsersTable
+
+User -> SignUpScreen: enters username, email, and password
+activate SignUpScreen
+SignUpScreen -> ReservationSystem: register(username, email, password)
+activate ReservationSystem
+ReservationSystem -> UsersTable: Check if username exists
+activate UsersTable
+alt Username exists
+    UsersTable --> ReservationSystem: User found
+    deactivate UsersTable
+    ReservationSystem --> SignUpScreen: "Username already exists."
+    deactivate ReservationSystem
+else Username does not exist
+    UsersTable --> ReservationSystem: Username available
+    deactivate UsersTable
+    ReservationSystem -> UsersTable: Insert new user
+    activate UsersTable
+    deactivate UsersTable
+    ReservationSystem --> SignUpScreen: "Registration successful."
+    deactivate ReservationSystem
+end
+SignUpScreen --> User: Show result
+deactivate SignUpScreen
+@enduml

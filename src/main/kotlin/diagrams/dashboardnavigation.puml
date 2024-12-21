@@ -1,0 +1,11 @@
+@startuml
+actor User
+boundary DashboardScreen
+
+User -> DashboardScreen: selects action
+alt Admin actions
+    DashboardScreen -> Admin: Show options: Add Room, Manage Rooms, View Bookings by Room and Day, etc.
+else User actions
+    DashboardScreen -> User: Show options: Book Computer, Search Rooms, View and Cancel Bookings, etc.
+end
+@enduml

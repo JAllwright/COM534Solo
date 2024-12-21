@@ -1,0 +1,35 @@
+@startuml
+
+actor Admin
+actor User as Student
+
+' Main Use Cases
+usecase "Login" as UC1
+usecase "Sign Up" as UC2
+usecase "Search Rooms" as UC3
+usecase "Book Computer" as UC4
+usecase "View and Cancel Bookings" as UC5
+usecase "View Room Graphically" as UC6
+usecase "Add Room" as UC7
+usecase "Change Room OS" as UC8
+usecase "Manage Rooms" as UC9
+usecase "View Bookings by Room" as UC10
+
+' Relationships
+UC1 --> UC3 : "Includes"
+UC2 --> UC3 : "Includes"
+UC4 --> UC5 : "Extends"
+UC6 --> UC4 : "Extends"
+
+' Admin Relationships
+Admin --> UC7 : "Manage Rooms"
+Admin --> UC8 : "Change Room OS"
+Admin --> UC10 : "View Bookings by Room"
+
+' Student Relationships
+Student --> UC3 : "Search Rooms"
+Student --> UC4 : "Book Computer"
+Student --> UC5 : "Cancel Bookings"
+Student --> UC6 : "View Room Layout"
+
+@enduml

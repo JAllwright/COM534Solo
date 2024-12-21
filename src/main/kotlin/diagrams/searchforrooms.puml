@@ -1,0 +1,28 @@
+@startuml
+actor User
+boundary SearchRoomsScreen
+control ReservationSystem
+database RoomsTable
+
+User -> SearchRoomsScreen: inputs search criteria
+activate SearchRoomsScreen
+SearchRoomsScreen -> ReservationSystem: searchRooms(buildingCode, operatingSystem)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: query matching rooms
+activate RoomsTable
+alt No rooms found
+    RoomsTable --> ReservationSystem: No matching rooms
+    deactivate RoomsTable
+    ReservationSystem -> SearchRoomsScreen: "No rooms found for Building: $buildingCode, OS: $operatingSystem."
+    deactivate ReservationSystem
+    SearchRoomsScreen --> User: Show error
+    deactivate SearchRoomsScreen
+else Rooms found
+    RoomsTable --> ReservationSystem: List of matching rooms
+    deactivate RoomsTable
+    ReservationSystem -> SearchRoomsScreen: return search results
+    deactivate ReservationSystem
+    SearchRoomsScreen --> User: Display search results
+    deactivate SearchRoomsScreen
+end
+@enduml

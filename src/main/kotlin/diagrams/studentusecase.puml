@@ -1,0 +1,21 @@
+@startuml
+actor User
+
+usecase "Login" as UC_Login
+usecase "Sign Up" as UC_SignUp
+usecase "Search for Rooms" as UC_SearchRooms
+usecase "Book a Computer" as UC_BookComputer
+usecase "View and Cancel Bookings" as UC_ViewCancelBookings
+usecase "View Room Graphically" as UC_RoomGraphicalView
+
+UC_SearchRooms <|-- UC_BookComputer : <<extends>>
+UC_RoomGraphicalView <|-- UC_BookComputer : <<includes>>
+UC_ViewCancelBookings <|-- UC_RoomGraphicalView : <<extends>>
+
+User -> UC_Login
+User -> UC_SignUp
+User -> UC_SearchRooms
+User -> UC_BookComputer
+User -> UC_ViewCancelBookings
+User -> UC_RoomGraphicalView
+@enduml

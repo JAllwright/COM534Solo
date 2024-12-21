@@ -1,0 +1,29 @@
+@startuml
+actor Admin
+boundary AddRoomScreen
+control ReservationSystem
+database RoomsTable
+
+Admin -> AddRoomScreen: enters room details
+activate AddRoomScreen
+AddRoomScreen -> ReservationSystem: addRoom(buildingCode, roomNumber, os, numComputers)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: Check if room exists
+activate RoomsTable
+alt Room exists
+    RoomsTable --> ReservationSystem: Room found
+    deactivate RoomsTable
+    ReservationSystem --> AddRoomScreen: "Room $buildingCode-$roomNumber already exists."
+    deactivate ReservationSystem
+else Room does not exist
+    RoomsTable --> ReservationSystem: Room not found
+    deactivate RoomsTable
+    ReservationSystem -> RoomsTable: Insert new room
+    activate RoomsTable
+    deactivate RoomsTable
+    ReservationSystem --> AddRoomScreen: "Room $buildingCode-$roomNumber with $numComputers computers successfully added."
+    deactivate ReservationSystem
+end
+AddRoomScreen --> Admin: Show result
+deactivate AddRoomScreen
+@enduml

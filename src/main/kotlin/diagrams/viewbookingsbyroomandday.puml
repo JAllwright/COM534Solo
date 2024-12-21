@@ -1,0 +1,31 @@
+@startuml
+actor Admin
+boundary ViewBookingsByRoomScreen
+control ReservationSystem
+database RoomsTable
+database BookingsTable
+
+Admin -> ViewBookingsByRoomScreen: enters room and day
+activate ViewBookingsByRoomScreen
+ViewBookingsByRoomScreen -> ReservationSystem: getBookingsByRoomAndDay(buildingCode, roomNumber, day)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: Validate room existence
+activate RoomsTable
+alt Room exists
+    RoomsTable --> ReservationSystem: Room found
+    deactivate RoomsTable
+    ReservationSystem -> BookingsTable: Query bookings for room and day
+    activate BookingsTable
+    BookingsTable --> ReservationSystem: List of bookings
+    deactivate BookingsTable
+    ReservationSystem --> ViewBookingsByRoomScreen: Return bookings
+    deactivate ReservationSystem
+else Room does not exist
+    RoomsTable --> ReservationSystem: Room not found
+    deactivate RoomsTable
+    ReservationSystem --> ViewBookingsByRoomScreen: "Room $buildingCode-$roomNumber not found."
+    deactivate ReservationSystem
+end
+ViewBookingsByRoomScreen --> Admin: Show result
+deactivate ViewBookingsByRoomScreen
+@enduml

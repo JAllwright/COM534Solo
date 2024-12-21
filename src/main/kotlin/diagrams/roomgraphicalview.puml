@@ -1,0 +1,30 @@
+@startuml
+actor User
+boundary RoomGraphicalViewScreen
+control ReservationSystem
+database RoomsTable
+database BookingsTable
+
+User -> RoomGraphicalViewScreen: requests room details
+activate RoomGraphicalViewScreen
+RoomGraphicalViewScreen -> ReservationSystem: getComputersInRoom(buildingCode, roomNumber, day, userName)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: Validate room
+activate RoomsTable
+alt Room exists
+    RoomsTable --> ReservationSystem: Room found
+    deactivate RoomsTable
+    ReservationSystem -> BookingsTable: Fetch bookings for room
+    activate BookingsTable
+    BookingsTable --> ReservationSystem: Booking details
+    deactivate BookingsTable
+    ReservationSystem --> RoomGraphicalViewScreen: Return computer statuses
+else Room does not exist
+    RoomsTable --> ReservationSystem: Room not found
+    deactivate RoomsTable
+    ReservationSystem --> RoomGraphicalViewScreen: "Room not found: $buildingCode-$roomNumber."
+end
+deactivate ReservationSystem
+RoomGraphicalViewScreen --> User: Show result
+deactivate RoomGraphicalViewScreen
+@enduml

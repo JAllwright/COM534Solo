@@ -1,0 +1,28 @@
+@startuml
+actor Admin
+boundary ChangeRoomOperatingSystemScreen
+control ReservationSystem
+database RoomsTable
+
+Admin -> ChangeRoomOperatingSystemScreen: enters room and new OS details
+activate ChangeRoomOperatingSystemScreen
+ChangeRoomOperatingSystemScreen -> ReservationSystem: updateRoomOperatingSystem(buildingCode, roomNumber, newOS)
+activate ReservationSystem
+ReservationSystem -> RoomsTable: Validate room existence
+activate RoomsTable
+alt Room exists
+    RoomsTable --> ReservationSystem: Room found
+    deactivate RoomsTable
+    ReservationSystem -> RoomsTable: Update OS
+    activate RoomsTable
+    deactivate RoomsTable
+    ReservationSystem --> ChangeRoomOperatingSystemScreen: "Room $buildingCode-$roomNumber updated to $newOperatingSystem."
+else Room does not exist
+    RoomsTable --> ReservationSystem: Room not found
+    deactivate RoomsTable
+    ReservationSystem --> ChangeRoomOperatingSystemScreen: "Room $buildingCode-$roomNumber not found."
+end
+deactivate ReservationSystem
+ChangeRoomOperatingSystemScreen --> Admin: Show result
+deactivate ChangeRoomOperatingSystemScreen
+@enduml
